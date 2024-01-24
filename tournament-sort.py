@@ -2,6 +2,8 @@
 import sys
 import random
 
+from comparisons_management import dump_comparisons, read_comparisons
+
 real_cmp_nb = 0
 
 # After, test to : https://www.baeldung.com/cs/tournament-sort-algorithm
@@ -33,10 +35,9 @@ def fusion(lists):
 
 
 
-
-
-
+# TODO: Move this in comparisons_management (register baselist func, etc ?)
 def vote_for(l_score, l_sort, idxs):
+
 	if(len(vote_for.l_fights) < total_len):
 		vote_for.l_fights = [[-1 for i in range(j)] for j in range(total_len)]
 		
@@ -53,6 +54,8 @@ def vote_for(l_score, l_sort, idxs):
 
 	global real_cmp_nb
 	real_cmp_nb += 1
+	if(real_cmp_nb % 10 == 0):
+		dump_comparisons(vote_for.l_fights, f"{sys.argv[1]}.cmp_sav")
 
 	res = input(f"\nChoose the best between {l_sort[idxs[0]]} and {l_sort[idxs[1]]}\nY - {l_sort[idxs[0]]}\n? - {l_sort[idxs[1]]}\n").lower()
 	print()
@@ -223,11 +226,17 @@ def sort_tournament(list_sort):
 
 
 
-# file_src = open(sys.argv[1], 'r')
-# data = file_src.read().splitlines() 
-# file_src.close()
+file_src = open(sys.argv[1], 'r')
+data = file_src.read().splitlines() 
+file_src.close()
 
-data = [i for i in range(120)]
+if(len(sys.argv) >= 3):
+	if(sys.argv[2] == "resume"):
+		print("Resumed")
+		vote_for.l_fights = read_comparisons(f"{sys.argv[1]}.cmp_sav")
+		print(vote_for.l_fights)
+
+# data = [i for i in range(120)]
 
 total_len = len(data)
 base_list = [elem for elem in data]
@@ -239,6 +248,8 @@ for i in range(len(l_sorted)):
 	ranking_global[l_sorted[i]] = i
 
 # TODO:Find a finer way to get outliers out -> chose those with most winrate ? -> Create groups from sorted ?
+# TODO: Sort by winrate ?
+
 
 while 1:
 	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
