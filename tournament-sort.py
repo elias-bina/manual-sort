@@ -49,6 +49,7 @@ def vote_for(l_score, l_sort, idxs):
 
 	
 	if(vote_for.l_fights[glob_idxs[0]][glob_idxs[1]] != -1):
+		print(f"\n + Skipped vote ({l_sort[idxs[0]]} / {l_sort[idxs[1]]}) -> {l_sort[idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]]}")
 		l_score[idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]]  += 1
 		return idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]
 
@@ -56,6 +57,7 @@ def vote_for(l_score, l_sort, idxs):
 	real_cmp_nb += 1
 	if(real_cmp_nb % 10 == 0):
 		dump_comparisons(vote_for.l_fights, f"{sys.argv[1]}.cmp_sav")
+		print("\n--- Dumped comparisons file ---")
 
 	res = input(f"\nChoose the best between {l_sort[idxs[0]]} and {l_sort[idxs[1]]}\nY - {l_sort[idxs[0]]}\n? - {l_sort[idxs[1]]}\n").lower()
 	print()
