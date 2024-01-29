@@ -2,7 +2,7 @@
 import sys
 import random
 
-from comparisons_management import dump_comparisons, read_comparisons
+from libs.comparisons_management import local_dump_cmp, read_comparisons, register_comparisons_filename, register_list_comparisions
 
 real_cmp_nb = 0
 
@@ -35,45 +35,45 @@ def fusion(lists):
 
 
 
-# TODO: Move this in comparisons_management (register baselist func, etc ?)
-def vote_for(l_score, l_sort, idxs):
 
-	if(len(vote_for.l_fights) < total_len):
-		vote_for.l_fights = [[-1 for i in range(j)] for j in range(total_len)]
-		
-	
+# TODO: Move this in comparisons_management (register baselist func, etc ?)
+l_fights=[]
+
+def vote_for(l_score, l_sort, idxs):
+	global l_fights
+	if(len(l_fights) < total_len):
+		l_fights = [[-1 for i in range(j)] for j in range(total_len)]
+		register_list_comparisions(l_fights)
+
+
 	glob_idxs = [base_list.index(l_sort[idx]) for idx in idxs]
+	print(f"\n{glob_idxs}", end="")
 	if(glob_idxs[0] < glob_idxs[1]):
 		idxs[0], idxs[1] = idxs[1], idxs[0]
 		glob_idxs[0], glob_idxs[1] = glob_idxs[1], glob_idxs[0]
 
+
+	previous_index = l_fights[glob_idxs[0]][glob_idxs[1]]
+	if(previous_index != -1):
+		print(f"\n + Skipped vote ({l_sort[idxs[0]]} / {l_sort[idxs[1]]}) -> {l_sort[idxs[previous_index]]}")
+		l_score[idxs[previous_index]]  += 1
+		return idxs[previous_index]
+
+	local_dump_cmp()
 	
-	if(vote_for.l_fights[glob_idxs[0]][glob_idxs[1]] != -1):
-		print(f"\n + Skipped vote ({l_sort[idxs[0]]} / {l_sort[idxs[1]]}) -> {l_sort[idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]]}")
-		l_score[idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]]  += 1
-		return idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]
-
-	global real_cmp_nb
-	real_cmp_nb += 1
-	if(real_cmp_nb % 10 == 0):
-		dump_comparisons(vote_for.l_fights, f"{sys.argv[1]}.cmp_sav")
-		print("\n--- Dumped comparisons file ---")
-
 	res = input(f"\nChoose the best between {l_sort[idxs[0]]} and {l_sort[idxs[1]]}\nY - {l_sort[idxs[0]]}\n? - {l_sort[idxs[1]]}\n").lower()
 	print()
-
 	if(res == "y"):
-		l_score[idxs[0]]  += 1
-		print(f"{l_sort[idxs[0]]} Chosen")
-		vote_for.l_fights[glob_idxs[0]][glob_idxs[1]] = 0
+		chosen_index = 0
 	else:
-		l_score[idxs[1]]  += 1
-		print(f"{l_sort[idxs[1]]} Chosen")
-		vote_for.l_fights[glob_idxs[0]][glob_idxs[1]] = 1
+		chosen_index = 1
+  
+	l_score[idxs[chosen_index]]  += 1
+	print(f"{l_sort[idxs[chosen_index]]} Chosen")
+	l_fights[glob_idxs[0]][glob_idxs[1]] = chosen_index
 
-	return idxs[vote_for.l_fights[glob_idxs[0]][glob_idxs[1]]]
+	return idxs[l_fights[glob_idxs[0]][glob_idxs[1]]]
 
-vote_for.l_fights=[]
 
 
 def sort_like(list_sort):
@@ -176,6 +176,10 @@ def run_tournament_step_matchs(depth_to_go, list_tournaments):
 
 def run_tournament_step(list_tournaments, step_depth):
 	if(step_depth == 0):
+		if(len(list_tournaments) > 2):
+			assert("Cringe man")
+		if(len(list_tournaments) == 1):
+			return [list_tournaments[0]]
 		voted = vote_for([0,0], list_tournaments, [0, 1])
 		return [list_tournaments[voted], list_tournaments[1 - voted]]
 	looser_list = run_tournament_step_matchs(step_depth, list_tournaments)
@@ -192,8 +196,9 @@ def tournament_phase(list_groups):
 
 
 def prepare_groups(list_sort):
-	random.shuffle(list_sort)
-	nb_elems = len(list_sort)
+	data = [i for i in list_sort]
+	random.shuffle(data)
+	nb_elems = len(data)
 	size_groups = 2
 	while size_groups * size_groups < nb_elems:
 		size_groups += 2
@@ -204,9 +209,9 @@ def prepare_groups(list_sort):
 	nb_groups = nb_elems // size_groups
 	list_groups = []
 	for group_idx in range(nb_groups):
-		list_groups.append(list_sort[size_groups * group_idx:size_groups * (group_idx + 1)])
+		list_groups.append(data[size_groups * group_idx:size_groups * (group_idx + 1)])
 	if(nb_groups*size_groups != nb_elems):
-		list_groups.append(list_sort[nb_groups*size_groups:])
+		list_groups.append(data[nb_groups*size_groups:])
 
 	print(f"Size of groups: {size_groups}; Nb groups: {len(list_groups)}")
 
@@ -218,6 +223,7 @@ def group_phase(list_sort):
 	for i in range(len(list_groups)):
 		list_groups[i] = sort_like(list_groups[i])
 		list_groups[i].reverse()
+		print(list_groups[i])
 	return list_groups
 
 
@@ -229,30 +235,29 @@ def sort_tournament(list_sort):
 
 
 file_src = open(sys.argv[1], 'r')
-data = file_src.read().splitlines() 
+base_list = file_src.read().splitlines() 
 file_src.close()
 
 if(len(sys.argv) >= 3):
 	if(sys.argv[2] == "resume"):
 		print("Resumed")
-		vote_for.l_fights = read_comparisons(f"{sys.argv[1]}.cmp_sav")
-		print(vote_for.l_fights)
+		l_fights = read_comparisons(f"{sys.argv[1]}.cmp_sav")
+		register_list_comparisions(l_fights)
+		print(l_fights)
+
 
 # data = [i for i in range(120)]
+total_len = len(base_list)
 
-total_len = len(data)
-base_list = [elem for elem in data]
-
+register_comparisons_filename(sys.argv[1])
 
 ranking_global = dict()
-l_sorted = sort_tournament(data)
+l_sorted = sort_tournament(base_list)
 for i in range(len(l_sorted)):
 	ranking_global[l_sorted[i]] = i
 
 # TODO:Find a finer way to get outliers out -> chose those with most winrate ? -> Create groups from sorted ?
 # TODO: Sort by winrate ?
-
-
 while 1:
 	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
 	print(ranking_global)
@@ -260,7 +265,7 @@ while 1:
 		print(elem)
 	print(f"\n Number of comparisions:{real_cmp_nb} (Max:{total_len * (total_len - 1) / 2})")
 	
-	l_sorted_repeat = sort_tournament(data)
+	l_sorted_repeat = sort_tournament(base_list)
 	for i in range(len(l_sorted_repeat)):
 		ranking_global[l_sorted_repeat[i]] += i
 

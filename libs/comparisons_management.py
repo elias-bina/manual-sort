@@ -17,6 +17,30 @@ def read_comparisons(file):
 			res.append(tmp_res)
 	return res
 
+comp_filename = ""
+l_fights = []
+real_cmp_nb = 0
+
+def register_comparisons_filename(filename):
+	global comp_filename
+	comp_filename = filename
+
+def register_list_comparisions(fights):
+	global l_fights
+	l_fights = fights
+
+def local_dump_cmp():
+	global real_cmp_nb
+	real_cmp_nb += 1
+	if(real_cmp_nb % 10 == 0):
+		dump_comparisons(l_fights, f"{comp_filename}.cmp_sav")
+		print("\n--- Dumped comparisons file ---")
+
+
+
+def calculate_winrates(list_comparisons):
+	pass
+
 
 if __name__ == '__main__':
 	import random
