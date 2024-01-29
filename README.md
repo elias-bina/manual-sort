@@ -12,14 +12,16 @@ Examples of said lists can be found in `./example-list-to-sort` (It's literally 
 There is a tournament sort only (for now) feature:
 The algorithm stores automatically the results of your comparisons in a `.cmp_sav` file, and by adding the cli option "resume", you can use a pre-existing `.cmp_sav` file to bypass already made comparisons
 
+There is an `expand-cmp-list.py` which allows to add some terms to your existing comparisons list
+
 
 # TODO:
+
+- Add an "error checker" which looks at a comparisons file, and check that the comparisons with the winrate differences are the most wrong according to the comparison are re-manually check
 
 - Have a real modules organization (global variables bad bla bla bla)
 
 - Align all algorithms CLI API by creating a library (for example at least the resume option) 
-
-- Create a "comparison file updater" which allows to add some elements to the saved comparisons (or add it in the CLI API ?), and modify manually some comparisons
 
 - Create an option to display the results by winrate whatever the algorithm is
 
