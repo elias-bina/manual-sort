@@ -2,9 +2,10 @@
 import sys
 import random
 
-from libs.comparisons_management import local_dump_cmp, read_comparisons, register_comparisons_filename, register_list_comparisions
+from libs.comparisons_management import vote_for, total_comparisons_this_session, \
+										calculate_global_winrates, global_sort_from_winrates
 
-real_cmp_nb = 0
+from libs.sort_cli_interface import register_sort, display_base, display_winrate
 
 # After, test to : https://www.baeldung.com/cs/tournament-sort-algorithm
 #                  https://en.oi-wiki.org/basic/tournament-sort/
@@ -32,48 +33,6 @@ def fusion(lists):
 			liste_res.append(lists[j][i])
 
 	return liste_res
-
-
-
-
-# TODO: Move this in comparisons_management (register baselist func, etc ?)
-l_fights=[]
-
-def vote_for(l_score, l_sort, idxs):
-	global l_fights
-	if(len(l_fights) < total_len):
-		l_fights = [[-1 for i in range(j)] for j in range(total_len)]
-		register_list_comparisions(l_fights)
-
-
-	glob_idxs = [base_list.index(l_sort[idx]) for idx in idxs]
-	print(f"\n{glob_idxs}", end="")
-	if(glob_idxs[0] < glob_idxs[1]):
-		idxs[0], idxs[1] = idxs[1], idxs[0]
-		glob_idxs[0], glob_idxs[1] = glob_idxs[1], glob_idxs[0]
-
-
-	previous_index = l_fights[glob_idxs[0]][glob_idxs[1]]
-	if(previous_index != -1):
-		print(f"\n + Skipped vote ({l_sort[idxs[0]]} / {l_sort[idxs[1]]}) -> {l_sort[idxs[previous_index]]}")
-		l_score[idxs[previous_index]]  += 1
-		return idxs[previous_index]
-
-	local_dump_cmp()
-	
-	res = input(f"\nChoose the best between {l_sort[idxs[0]]} and {l_sort[idxs[1]]}\nY - {l_sort[idxs[0]]}\n? - {l_sort[idxs[1]]}\n").lower()
-	print()
-	if(res == "y"):
-		chosen_index = 0
-	else:
-		chosen_index = 1
-  
-	l_score[idxs[chosen_index]]  += 1
-	print(f"{l_sort[idxs[chosen_index]]} Chosen")
-	l_fights[glob_idxs[0]][glob_idxs[1]] = chosen_index
-
-	return idxs[l_fights[glob_idxs[0]][glob_idxs[1]]]
-
 
 
 def sort_like(list_sort):
@@ -227,44 +186,34 @@ def group_phase(list_sort):
 	return list_groups
 
 
-
-
 def sort_tournament(list_sort):
 	return tournament_phase(group_phase(list_sort))
 
 
 
-file_src = open(sys.argv[1], 'r')
-base_list = file_src.read().splitlines() 
-file_src.close()
-
-if(len(sys.argv) >= 3):
-	if(sys.argv[2] == "resume"):
-		print("Resumed")
-		l_fights = read_comparisons(f"{sys.argv[1]}.cmp_sav")
-		register_list_comparisions(l_fights)
-		print(l_fights)
-
-
-# data = [i for i in range(120)]
+base_list = register_sort()
 total_len = len(base_list)
-
-register_comparisons_filename(sys.argv[1])
 
 ranking_global = dict()
 l_sorted = sort_tournament(base_list)
 for i in range(len(l_sorted)):
 	ranking_global[l_sorted[i]] = i
 
-# TODO:Find a finer way to get outliers out -> chose those with most winrate ? -> Create groups from sorted ?
-# TODO: Sort by winrate ?
 while 1:
 	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
-	print(ranking_global)
-	for elem in dict(sorted(ranking_global.items(), key=lambda x:x[1])):
-		print(elem)
-	print(f"\n Number of comparisions:{real_cmp_nb} (Max:{total_len * (total_len - 1) / 2})")
-	
+	if display_base():
+		print("Result from algorithm")
+		print(ranking_global)
+		for elem in dict(sorted(ranking_global.items(), key=lambda x:x[1])):
+			print(elem)
+
+	if display_winrate():
+		print("Result from winrate")
+		print(f"List winrates:\n{calculate_global_winrates()}")
+		for elem in global_sort_from_winrates():
+			print(elem)
+		print(f"\n Number of comparisions:{total_comparisons_this_session()} (Max:{ total_len * (total_len- 1) / 2})")
+
 	l_sorted_repeat = sort_tournament(base_list)
 	for i in range(len(l_sorted_repeat)):
 		ranking_global[l_sorted_repeat[i]] += i

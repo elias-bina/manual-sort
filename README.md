@@ -17,13 +17,11 @@ There is an `expand-cmp-list.py` which allows to add some terms to your existing
 
 # TODO:
 
+- Add typing (fk python)
+
 - Add an "error checker" which looks at a comparisons file, and check that the comparisons with the winrate differences are the most wrong according to the comparison are re-manually check
 
-- Have a real modules organization (global variables bad bla bla bla)
-
-- Align all algorithms CLI API by creating a library (for example at least the resume option) 
-
-- Create an option to display the results by winrate whatever the algorithm is
+- Align all algorithms CLI API 
 
 - Test "Winrate sort" -> At first make "random" matches (create a pool, take pairs, rince, repeat), and when there are some little stats, sort by winrate and fight between games with similar winrates (before this step), and show the results each X waves
 
