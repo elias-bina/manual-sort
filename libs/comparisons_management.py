@@ -55,7 +55,7 @@ def vote_for(l_score, l_sort, idxs):
 
 
 	glob_idxs = [elements_list.index(l_sort[idx]) for idx in idxs]
-	print(f"\n{glob_idxs}", end="")
+	# print(f"\n{glob_idxs}", end="")
 	if(glob_idxs[0] < glob_idxs[1]):
 		idxs[0], idxs[1] = idxs[1], idxs[0]
 		glob_idxs[0], glob_idxs[1] = glob_idxs[1], glob_idxs[0]

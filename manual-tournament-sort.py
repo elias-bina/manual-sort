@@ -1,11 +1,10 @@
 #! /usr/bin/python3
-import sys
 import random
 
 from libs.comparisons_management import vote_for, total_comparisons_this_session, \
 										calculate_global_winrates, global_sort_from_winrates
 
-from libs.sort_cli_interface import register_sort, display_base, display_winrate
+from libs.sort_cli_interface import register_sort, can_display_base, can_display_winrate
 
 # After, test to : https://www.baeldung.com/cs/tournament-sort-algorithm
 #                  https://en.oi-wiki.org/basic/tournament-sort/
@@ -201,13 +200,13 @@ for i in range(len(l_sorted)):
 
 while 1:
 	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
-	if display_base():
+	if can_display_base():
 		print("Result from algorithm")
 		print(ranking_global)
 		for elem in dict(sorted(ranking_global.items(), key=lambda x:x[1])):
 			print(elem)
 
-	if display_winrate():
+	if can_display_winrate():
 		print("Result from winrate")
 		print(f"List winrates:\n{calculate_global_winrates()}")
 		for elem in global_sort_from_winrates():

@@ -27,10 +27,10 @@ def register_sort():
 
 	return base_list
 
-def display_winrate():
+def can_display_winrate():
 	return args.winrate_display or args.only_winrate
 
-def display_base():
+def can_display_base():
 	return not args.only_winrate
 
 

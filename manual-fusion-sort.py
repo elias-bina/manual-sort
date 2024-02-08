@@ -36,6 +36,8 @@ def get_comp(lists, idxs):
 		print(f"\nChoose {lists[1][idxs[1]]}\n")
 	return res
 
+print("/!\\ This sort doesn't have the new CLI because it is too flawed and I don't want to switch from 'get_comp' to 'vote_for' for a 10 lines algorithm /!\\\n")
+
 file_src = open(sys.argv[1], 'r')
 data = file_src.read().splitlines() 
 file_src.close()
