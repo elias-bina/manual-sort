@@ -85,6 +85,14 @@ def vote_for(l_score, l_sort, idxs):
 def total_comparisons_this_session():
 	return real_cmp_nb
 
+def total_comparisions():
+	nb_cmp = 0
+	for cmp_list in l_fights:
+		for elem in cmp_list:
+			if elem != -1:
+				nb_cmp += 1
+	return nb_cmp
+
 def calculate_winrates(list_comparisons):
 	l_nb_fights = [0] * len(list_comparisons)
 	l_fights_won = [0] * len(list_comparisons)
