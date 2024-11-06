@@ -3,10 +3,10 @@ import argparse
 from libs.comparisons_management import register_comparisons_filename, register_elements_list, register_list_comparisions, read_comparisons
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-r', '--resume', help='Uses an existing comparisoins file to do comparisons', action='store_true')
+parser.add_argument('-r', '--resume', help='Uses an existing comparisons file to do comparisons', action='store_true')
 parser.add_argument('-o', '--only-winrate', help='Prints only the list sorted by winrate after the original sort', action='store_true')
 parser.add_argument('-w', '--winrate-display', help='Prints the list sorted by winrate after the original sort', action='store_true')
-parser.add_argument('filename', help='bar help')
+parser.add_argument('filename', help='The file containing the list of things to sort')
 
 args = parser.parse_args()
 
