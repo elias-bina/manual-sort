@@ -20,10 +20,10 @@ def register_sort():
 	register_elements_list(base_list)
 
 	if(args.resume):
-			print("Resumed")
-			l_fights = read_comparisons(f"{args.filename}.cmp_sav")
-			register_list_comparisions(l_fights)
-			print(l_fights)
+		print("Resumed")
+		l_fights = read_comparisons(f"{args.filename}.cmp_sav")
+		register_list_comparisions(l_fights)
+		print(l_fights)
 
 	return base_list
 
@@ -32,5 +32,8 @@ def can_display_winrate():
 
 def can_display_base():
 	return not args.only_winrate
+
+def is_resumed():
+	return args.resume
 
 

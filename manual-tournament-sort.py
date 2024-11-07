@@ -4,7 +4,7 @@ import random
 from libs.comparisons_management import vote_for, total_comparisons_this_session, total_comparisions, \
 										calculate_global_winrates, global_sort_from_winrates
 
-from libs.sort_cli_interface import register_sort, can_display_base, can_display_winrate
+from libs.sort_cli_interface import register_sort, can_display_base, can_display_winrate, is_resumed
 
 # After, test to : https://www.baeldung.com/cs/tournament-sort-algorithm
 #                  https://en.oi-wiki.org/basic/tournament-sort/
@@ -192,6 +192,13 @@ def sort_tournament(list_sort):
 
 base_list = register_sort()
 total_len = len(base_list)
+
+if(can_display_winrate() and is_resumed()):
+	print("Result from winrate\n")
+	print(f"List winrates:\n{calculate_global_winrates()}\n\n")
+	for elem in global_sort_from_winrates():
+		print(elem)
+	print(f"\nNumber of comparisions this session:{total_comparisons_this_session()}; Total comparisions:{total_comparisions()} (Max:{total_len * (total_len- 1) / 2})")
 
 ranking_global = dict()
 l_sorted = sort_tournament(base_list)
