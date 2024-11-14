@@ -208,40 +208,42 @@ def sort_tournament(list_sort):
 
 
 
-base_list = register_sort()
-total_len = len(base_list)
 
-if(can_display_winrate() and is_resumed()):
-	print("Result from winrate\n")
-	print(f"List winrates:\n{calculate_global_winrates()}\n\n")
-	for elem in global_sort_from_winrates():
-		print(elem)
-	print(f"\nNumber of comparisions this session:{total_comparisons_this_session()}; Total comparisions:{total_comparisions()} (Max:{total_len * (total_len- 1) / 2})")
+if __name__ == "__main__":
+	base_list = register_sort()
+	total_len = len(base_list)
 
-ranking_global = dict()
-l_sorted = sort_tournament(base_list)
-for i in range(len(l_sorted)):
-	ranking_global[l_sorted[i]] = i
-
-while 1:
-	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
-	if can_display_base():
-		print("Result from algorithm\n")
-		print(ranking_global)
-		print("\n")
-		for elem in dict(sorted(ranking_global.items(), key=lambda x:x[1])):
-			print(elem)
-		print("\n\n")
-
-
-	if can_display_winrate():
+	if(can_display_winrate() and is_resumed()):
 		print("Result from winrate\n")
 		print(f"List winrates:\n{calculate_global_winrates()}\n\n")
 		for elem in global_sort_from_winrates():
 			print(elem)
 		print(f"\nNumber of comparisions this session:{total_comparisons_this_session()}; Total comparisions:{total_comparisions()} (Max:{total_len * (total_len- 1) / 2})")
 
-	l_sorted_repeat = sort_tournament(base_list)
-	for i in range(len(l_sorted_repeat)):
-		ranking_global[l_sorted_repeat[i]] += i
+	ranking_global = dict()
+	l_sorted = sort_tournament(base_list)
+	for i in range(len(l_sorted)):
+		ranking_global[l_sorted[i]] = i
+
+	while 1:
+		print("\n\n================ TOURNAMENT RESULTS (continue to refine results) ================\n\n")
+		if can_display_base():
+			print("Result from algorithm\n")
+			print(ranking_global)
+			print("\n")
+			for elem in dict(sorted(ranking_global.items(), key=lambda x:x[1])):
+				print(elem)
+			print("\n\n")
+
+
+		if can_display_winrate():
+			print("Result from winrate\n")
+			print(f"List winrates:\n{calculate_global_winrates()}\n\n")
+			for elem in global_sort_from_winrates():
+				print(elem)
+			print(f"\nNumber of comparisions this session:{total_comparisons_this_session()}; Total comparisions:{total_comparisions()} (Max:{total_len * (total_len- 1) / 2})")
+
+		l_sorted_repeat = sort_tournament(base_list)
+		for i in range(len(l_sorted_repeat)):
+			ranking_global[l_sorted_repeat[i]] += i
 
