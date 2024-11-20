@@ -8,7 +8,7 @@
 
 ### Outdated sorts:
 
-Please don't use `manual-fusion-sort` of `manual-total-sort`, these are here only here for history purposes
+Please don't use `manual-fusion-sort` or `manual-total-sort`, these are only here for history purposes
 
 ### Real tools
 
@@ -25,7 +25,7 @@ Please don't use `manual-fusion-sort` of `manual-total-sort`, these are here onl
 
 - Add typing (fk python)
 
-- Add an "error checker" which looks at a comparisons file, and check that the comparisons with the winrate differences are the most wrong according to the comparison are re-manually check
+- Add an "error checker" which looks at a comparisons file, and check if comparisons result match winrate difference (e.g 90% winrate should'nt lose against 10% winrate)
 
 - Test "Winrate sort" -> At first make "random" matches (create a pool, take pairs, rince, repeat), and when there are some little stats, sort by winrate and fight between games with similar winrates (before this step), and show the results each X waves
 
