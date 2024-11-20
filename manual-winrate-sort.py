@@ -16,16 +16,18 @@ def sort_winrate(base_list):
 	print(winrates)
 
 
-base_list = register_sort()
-l_sorted = sort_winrate(base_list)
+if __name__ == "__main__":
+	base_list = register_sort()
+	l_sorted = sort_winrate(base_list)
 
-total_len = len(base_list)
+	total_len = len(base_list)
 
-while 1:
-	print("\n\n================ TORNAMENT RESULTS (continue to refine results) ================\n\n")
-	if can_display_base() or can_display_winrate():
-		print("Result from algorithm (same as winrate)")
-		print(f"List winrates:\n{calculate_global_winrates()}")
-		for elem in global_sort_from_winrates():
-			print(elem)
-		print(f"\n Number of comparisions:{total_comparisons_this_session()} (Max:{ total_len * (total_len- 1) / 2})")
+
+	while 1:
+		print("\n\n================ TOURNAMENT RESULTS (continue to refine results) ================\n\n")
+		if can_display_base() or can_display_winrate():
+			print("Result from algorithm (same as winrate)")
+			print(f"List winrates:\n{calculate_global_winrates()}")
+			for elem in global_sort_from_winrates():
+				print(elem)
+			print(f"\n Number of comparisions:{total_comparisons_this_session()} (Max:{ total_len * (total_len- 1) / 2})")
